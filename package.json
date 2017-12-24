@@ -1,0 +1,35 @@
+{
+  "name": "treemap",
+  "version": "0.0.1",
+  "description": "d3.js based, non-recursive data displaying treemap",
+  "main": "treemap.ts",
+  "scripts": {
+    "build": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoekhanOezen/TreeMap.git"
+  },
+  "keywords": [
+    "d3",
+    "treemap",
+    "non-recursive"
+  ],
+  "dependencies": {
+    "d3": "^3.5.17"
+  },
+  "author": "Gökhan Özen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GoekhanOezen/TreeMap/issues"
+  },
+  "homepage": "https://github.com/GoekhanOezen/TreeMap#readme",
+  "devDependencies": {
+    "@types/d3": "^3.5.36",
+    "browser-sync": "^2.23.6",
+    "gulp": "^3.9.1",
+    "gulp-less": "^4.0.0",
+    "gulp-typescript": "^3.2.3",
+    "typescript": "^2.7.2"
+  }
+}
