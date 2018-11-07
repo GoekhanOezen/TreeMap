@@ -1,11 +1,13 @@
 html, body {
   height: 100%;
-  width: 100%; }
+  width: 100%;
+}
 
 .chart {
   margin: auto;
   background-color: transparent;
-  position: relative; }
+  position: relative;
+}
 
 .node {
   border: solid 1px white;
@@ -13,4 +15,5 @@ html, body {
   line-height: 12px;
   overflow: hidden;
   position: absolute;
-  text-indent: 2px; }
+  text-indent: 2px;
+}

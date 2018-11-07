@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "none",
+    "target": "es5",
+    "outFile": "dist/treemap.js",
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
