@@ -8,19 +8,19 @@ var TreeMap = /** @class */ (function () {
             title: 'root',
             color: 'transparent'
         };
-        console.log(this);
-        this.init();
-        this.updateDimension();
-        this.drawTreemap();
+        this.draw();
     }
     TreeMap.prototype.init = function () {
         this.initContainer();
         this.setParentSizeListener();
+        this.updateDimension();
+    };
+    TreeMap.prototype.draw = function () {
+        this.init();
+        this.drawTreemap();
     };
     TreeMap.prototype.resize = function () {
-        console.log('before', this.datum);
         this.updateDimension();
-        console.log('after', this.datum);
         this.drawTreemap();
     };
     TreeMap.prototype.update = function (treemapdata) {
@@ -29,11 +29,11 @@ var TreeMap = /** @class */ (function () {
     };
     TreeMap.prototype.delete = function () {
         this.removeParentSizeListener();
-        this.treemapData = [];
-        this.drawTreemap();
+        this.drawTreemap(true);
+        this.deleteContainer();
     };
-    TreeMap.prototype.drawTreemap = function () {
-        this.rootNode.children = this.treemapData;
+    TreeMap.prototype.drawTreemap = function (empty) {
+        this.rootNode.children = empty ? [] : this.treemapData;
         this.datum = d3.treemap().size([this.width, this.height])(d3.hierarchy(this.rootNode, function (d) { return d.children; })
             .sum(function (d) { return d.value; }));
         // data join
@@ -41,12 +41,9 @@ var TreeMap = /** @class */ (function () {
         // data enter
         this.treemap.enter().append("div")
             .attr("class", "node")
-            .style("left", function (d) { return (d.x0 + (d.x1 - d.x0) / 2) + "px"; })
-            .style("top", function (d) { return (d.y0 + (d.y1 - d.y0) / 2) + "px"; })
-            .style("width", function (d) { return 0 + "px"; })
-            .style("height", function (d) { return 0 + "px"; })
+            .call(TreeMap.initialDimension)
             .merge(this.treemap)
-            .transition().duration(300)
+            .transition()
             .style("left", function (d) { return d.x0 + "px"; })
             .style("top", function (d) { return d.y0 + "px"; })
             .style("width", function (d) { return Math.max(0, d.x1 - d.x0 - 1) + "px"; })
@@ -54,22 +51,32 @@ var TreeMap = /** @class */ (function () {
             .style("background-color", function (d) { return d.data.color; });
         // data exit
         this.treemap.exit()
-            .transition().duration(300)
-            .style("left", function (d) { return (d.x0 + (d.x1 - d.x0) / 2) + "px"; })
-            .style("top", function (d) { return (d.y0 + (d.y1 - d.y0) / 2) + "px"; })
-            .style("width", function (d) { return 0 + "px"; })
-            .style("height", function (d) { return 0 + "px"; })
+            .transition()
+            .call(TreeMap.initialDimension)
             .remove();
-        console.log(this.datum);
     };
     TreeMap.prototype.initContainer = function () {
         this.container = d3.select(this.selector);
         this.containerNode = this.container.node();
-        this.root = this.container.append('div').classed('root', true);
+        if (!this.container.select('.root').node()) {
+            this.root = this.container.append('div').classed('root', true);
+        }
+    };
+    TreeMap.prototype.deleteContainer = function () {
+        this.containerNode.innerHTML = '';
+        this.containerNode.removeAttribute("data-width");
+        this.containerNode.removeAttribute("data-height");
     };
     TreeMap.prototype.updateDimension = function () {
         this.width = this.containerNode.offsetWidth;
         this.height = this.containerNode.offsetHeight;
+    };
+    TreeMap.initialDimension = function (selection) {
+        selection
+            .style('left', function (d) { return d.x0 + (d.x1 - d.x0) / 2 + "px"; })
+            .style('top', function (d) { return d.y0 + (d.y1 - d.y0) / 2 + "px"; })
+            .style('width', function () { return "0px"; })
+            .style('height', function () { return "0px"; });
     };
     /**
      * ParentSizeListener

@@ -17,16 +17,18 @@ class TreeMap {
     private height: number;
 
     constructor (private selector: string, private treemapData: TreeMapData[]) {
-        this.init();
-
-        this.updateDimension();
-
-        this.drawTreemap();
+        this.draw();
     }
 
     init() {
         this.initContainer();
         this.setParentSizeListener();
+        this.updateDimension();
+    }
+
+    draw() {
+        this.init();
+        this.drawTreemap();
     }
 
     resize() {
@@ -41,12 +43,12 @@ class TreeMap {
 
     delete() {
         this.removeParentSizeListener();
-        this.treemapData = [];
-        this.drawTreemap();
+        this.drawTreemap(true);
+        this.deleteContainer();
     }
 
-    private drawTreemap() {
-        this.rootNode.children = this.treemapData;
+    private drawTreemap(empty?: boolean) {
+        this.rootNode.children = empty ? [] : this.treemapData;
 
         this.datum = d3.treemap().size([this.width, this.height])(d3.hierarchy(this.rootNode, (d) => d.children)
             .sum((d) => d.value));
@@ -55,12 +57,9 @@ class TreeMap {
         // data enter
         this.treemap.enter().append("div")
             .attr("class", "node")
-            .style("left", (d) => (d.x0 + (d.x1 - d.x0)/2) + "px")
-            .style("top", (d) => (d.y0 + (d.y1 - d.y0)/2) + "px")
-            .style("width", (d) => 0 + "px")
-            .style("height", (d) => 0 + "px")
+            .call(TreeMap.initialDimension)
             .merge(this.treemap)
-            .transition().duration(300)
+            .transition()
             .style("left", (d) => d.x0 + "px")
             .style("top", (d) => d.y0 + "px")
             .style("width", (d) => Math.max(0, d.x1 - d.x0 - 1) + "px")
@@ -68,11 +67,8 @@ class TreeMap {
             .style("background-color", d => d.data.color);
         // data exit
         this.treemap.exit()
-            .transition().duration(300)
-            .style("left", (d) => (d.x0 + (d.x1 - d.x0)/2) + "px")
-            .style("top", (d) => (d.y0 + (d.y1 - d.y0)/2) + "px")
-            .style("width", (d) => 0 + "px")
-            .style("height", (d) => 0 + "px")
+            .transition()
+            .call(TreeMap.initialDimension)
             .remove();
     }
 
@@ -80,7 +76,15 @@ class TreeMap {
         this.container = d3.select(this.selector);
         this.containerNode = this.container.node();
 
-        this.root = this.container.append('div').classed('root',true);
+        if (!this.container.select('.root').node()) {
+            this.root = this.container.append('div').classed('root',true);
+        }
+    }
+
+    deleteContainer() {
+        this.containerNode.innerHTML = '';
+        this.containerNode.removeAttribute("data-width");
+        this.containerNode.removeAttribute("data-height");
     }
 
     private updateDimension() {
@@ -88,6 +92,13 @@ class TreeMap {
         this.height = this.containerNode.offsetHeight;
     }
 
+    private static initialDimension(selection: d3.SelectionOrTransition<HTMLElement, d3.HierarchyRectangularNode<TreeMapData>, HTMLElement, null>): void {
+        selection
+            .style('left', d => `${d.x0 + (d.x1 - d.x0) / 2}px`)
+            .style('top', d => `${d.y0 + (d.y1 - d.y0) / 2}px`)
+            .style('width', () => `0px`)
+            .style('height', () => `0px`);
+    }
 
     /**
      * ParentSizeListener
