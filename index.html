@@ -1,13 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>TreeMap</title>
+    <title>Test Treemap</title>
+    <link rel="stylesheet" href="../dist/treemap.css">
 </head>
-<body>
-    <div id="treemap"></div>
-    <script>
 
-    </script>
+<body>
+<h1>Treemap</h1>
+<div class="chart" style="width: 50%;height: 50%"></div>
+<button onclick="drawChart()">draw Chart</button>
+<button onclick="toggleData()">Toggle Data</button>
+<button onclick="deleteChart()">delete Chart</button>
+<script src="../node_modules/d3/dist/d3.js"></script>
+<script src="../dist/treemap.js"></script>
+<script>
+    var data = [
+        {
+            id: 1,
+            value: 40,
+            color: 'blue'
+        },
+        {
+            id: 3,
+            value: 50,
+            color: 'green'
+        },
+        {
+            id: 2,
+            value: 30,
+            color: 'red'
+        }
+    ];
+    var data2 = [
+        {
+            id: 4,
+            value: 80,
+            color: 'yellow'
+        },
+        {
+            id: 2,
+            value: 10,
+            color: 'red'
+        }
+    ];
+    var initial = true;
+    var treemap = new TreeMap('.chart', data);
+
+    function drawChart() {
+        toggleData();
+    }
+
+    function toggleData() {
+        treemap.update(initial ? data2 : data);
+        initial = !initial;
+    }
+
+    function deleteChart() {
+        treemap.delete();
+    }
+</script>
 </body>
 </html>
