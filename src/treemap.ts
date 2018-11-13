@@ -59,6 +59,8 @@ class TreeMap {
             .attr("class", "node")
             .call(TreeMap.initialDimension)
             .merge(this.treemap)
+            .on('mouseover', function (d, i, nodes) { TreeMap.addHoverClasses(this, nodes, true); })
+            .on('mouseout', function (d, i, nodes) { TreeMap.addHoverClasses(this, nodes, false); })
             .transition()
             .style("left", (d) => d.x0 + "px")
             .style("top", (d) => d.y0 + "px")
@@ -70,6 +72,12 @@ class TreeMap {
             .transition()
             .call(TreeMap.initialDimension)
             .remove();
+    }
+
+    private static addHoverClasses(node: HTMLElement, nodes: HTMLElement[], classed: boolean) {
+        let defocusedNodes = nodes.filter(aNode => aNode !== node);
+        d3.select(node).classed('focused', classed);
+        d3.selectAll(defocusedNodes).classed('defocused', classed);
     }
 
     initContainer() {

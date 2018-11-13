@@ -16,4 +16,10 @@ html, body {
   overflow: hidden;
   position: absolute;
   text-indent: 2px;
+  opacity: 1;
+  transition: opacity 300ms;
+}
+
+.node.defocused {
+  opacity: 0.3;
 }

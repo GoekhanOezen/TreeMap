@@ -43,6 +43,8 @@ var TreeMap = /** @class */ (function () {
             .attr("class", "node")
             .call(TreeMap.initialDimension)
             .merge(this.treemap)
+            .on('mouseover', function (d, i, nodes) { TreeMap.addHoverClasses(this, nodes, true); })
+            .on('mouseout', function (d, i, nodes) { TreeMap.addHoverClasses(this, nodes, false); })
             .transition()
             .style("left", function (d) { return d.x0 + "px"; })
             .style("top", function (d) { return d.y0 + "px"; })
@@ -54,6 +56,11 @@ var TreeMap = /** @class */ (function () {
             .transition()
             .call(TreeMap.initialDimension)
             .remove();
+    };
+    TreeMap.addHoverClasses = function (node, nodes, classed) {
+        var defocusedNodes = nodes.filter(function (aNode) { return aNode !== node; });
+        d3.select(node).classed('focused', classed);
+        d3.selectAll(defocusedNodes).classed('defocused', classed);
     };
     TreeMap.prototype.initContainer = function () {
         this.container = d3.select(this.selector);
