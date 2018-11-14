@@ -9,7 +9,7 @@ class TreeMap {
     private rootNode: TreeMapData = {
         id: null,
         value: 0,
-        title: 'root',
+        name: 'root',
         color: 'transparent'
     };
     private treemap: any;
@@ -59,6 +59,7 @@ class TreeMap {
             .attr("class", "node")
             .call(TreeMap.initialDimension)
             .merge(this.treemap)
+            .text(d => d.data.name)
             .on('mouseover', function (d, i, nodes) { TreeMap.addHoverClasses(this, nodes, true); })
             .on('mouseout', function (d, i, nodes) { TreeMap.addHoverClasses(this, nodes, false); })
             .transition()
@@ -155,7 +156,7 @@ class TreeMap {
 interface TreeMapData {
     id: number;
     value: number;
-    title: string;
+    name: string;
     color: string;
     children?: TreeMapData[]
 }

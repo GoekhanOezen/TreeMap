@@ -9,6 +9,7 @@ The treemap shall display a set of data (TreeMapData) as rectangles
 The data object shall has:
  - id: to identify the data
  - value: to draw the area corresponding to it
+ - name: a text to display
  - color: as background-color
  
 ## Features

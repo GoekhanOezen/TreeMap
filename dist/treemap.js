@@ -5,7 +5,7 @@ var TreeMap = /** @class */ (function () {
         this.rootNode = {
             id: null,
             value: 0,
-            title: 'root',
+            name: 'root',
             color: 'transparent'
         };
         this.draw();
@@ -43,6 +43,7 @@ var TreeMap = /** @class */ (function () {
             .attr("class", "node")
             .call(TreeMap.initialDimension)
             .merge(this.treemap)
+            .text(function (d) { return d.data.name; })
             .on('mouseover', function (d, i, nodes) { TreeMap.addHoverClasses(this, nodes, true); })
             .on('mouseout', function (d, i, nodes) { TreeMap.addHoverClasses(this, nodes, false); })
             .transition()
